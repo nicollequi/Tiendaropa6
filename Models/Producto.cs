@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TiendaRopa.Models
 {
@@ -28,5 +29,11 @@ namespace TiendaRopa.Models
 
         public int CategoriaId { get; set; }
         public Categoria? Categoria { get; set; }
+
+        // Imagen
+        public string? ImagenUrl { get; set; }
+
+        [NotMapped]
+        public IFormFile? ImagenArchivo { get; set; }
     }
 }

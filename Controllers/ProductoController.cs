@@ -9,10 +9,12 @@ namespace TiendaRopa.Controllers
     public class ProductoController : Controller
     {
         private readonly TiendaContext _context;
+        private readonly IWebHostEnvironment _env;
 
-        public ProductoController(TiendaContext context)
+        public ProductoController(TiendaContext context, IWebHostEnvironment env)
         {
             _context = context;
+            _env = env;
         }
 
         public async Task<IActionResult> Index()
@@ -33,8 +35,22 @@ namespace TiendaRopa.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Producto producto)
         {
+            ModelState.Remove("ImagenArchivo");
+            ModelState.Remove("ImagenUrl");
+
             if (ModelState.IsValid)
             {
+                if (producto.ImagenArchivo != null && producto.ImagenArchivo.Length > 0)
+                {
+                    var carpeta = Path.Combine(_env.WebRootPath, "imagenes", "productos");
+                    Directory.CreateDirectory(carpeta);
+                    var nombreArchivo = Guid.NewGuid().ToString() + Path.GetExtension(producto.ImagenArchivo.FileName);
+                    var rutaCompleta = Path.Combine(carpeta, nombreArchivo);
+                    using var stream = new FileStream(rutaCompleta, FileMode.Create);
+                    await producto.ImagenArchivo.CopyToAsync(stream);
+                    producto.ImagenUrl = "/imagenes/productos/" + nombreArchivo;
+                }
+
                 _context.Add(producto);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -56,8 +72,23 @@ namespace TiendaRopa.Controllers
         public async Task<IActionResult> Edit(int id, Producto producto)
         {
             if (id != producto.Id) return NotFound();
+
+            ModelState.Remove("ImagenArchivo");
+            ModelState.Remove("ImagenUrl");
+
             if (ModelState.IsValid)
             {
+                if (producto.ImagenArchivo != null && producto.ImagenArchivo.Length > 0)
+                {
+                    var carpeta = Path.Combine(_env.WebRootPath, "imagenes", "productos");
+                    Directory.CreateDirectory(carpeta);
+                    var nombreArchivo = Guid.NewGuid().ToString() + Path.GetExtension(producto.ImagenArchivo.FileName);
+                    var rutaCompleta = Path.Combine(carpeta, nombreArchivo);
+                    using var stream = new FileStream(rutaCompleta, FileMode.Create);
+                    await producto.ImagenArchivo.CopyToAsync(stream);
+                    producto.ImagenUrl = "/imagenes/productos/" + nombreArchivo;
+                }
+
                 _context.Update(producto);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
