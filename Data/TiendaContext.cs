@@ -13,5 +13,7 @@ namespace TiendaRopa.Data
         public DbSet<Producto> Productos { get; set; }
         public DbSet<Categoria> Categorias { get; set; }
         public DbSet<Usuario> Usuarios { get; set; }
+
+        public DbSet<Venta> Ventas { get; set; }
     }
 }

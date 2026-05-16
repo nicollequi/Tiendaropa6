@@ -1,0 +1,59 @@
+﻿@model List<TiendaRopa.Models.Venta>
+@{
+    ViewData["Title"] = "Registro de Ventas";
+}
+
+<div class="page-header">
+    <div class="container">
+        <h1><i class="fas fa-chart-line"></i> Registro de Ventas</h1>
+        <p class="mb-0" style="color:#ccc;">Historial de todas las ventas realizadas</p>
+    </div>
+</div>
+
+<div class="container pb-5">
+    @if (!Model.Any())
+    {
+        <div class="text-center py-5">
+            <i class="fas fa-chart-line fa-4x mb-3" style="color:#e2b96f;"></i>
+            <h4>No hay ventas registradas aún</h4>
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-custom table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Fecha</th>
+                        <th>Producto</th>
+                        <th>Vendedor</th>
+                        <th>Cantidad</th>
+                        <th>Precio unit.</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var venta in Model)
+                    {
+                        <tr>
+                            <td>@venta.Id</td>
+                            <td>@venta.Fecha.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td><strong>@venta.Producto?.Nombre</strong></td>
+                            <td>@venta.Usuario?.Nombre</td>
+                            <td><span class="badge-stock">@venta.Cantidad unid.</span></td>
+                            <td>$@venta.PrecioUnitario.ToString("N0")</td>
+                            <td><strong style="color:#e2b96f;">$@venta.Total.ToString("N0")</strong></td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr style="background:#f8f9fa;">
+                        <td colspan="6" class="text-end fw-bold">Total general:</td>
+                        <td><strong style="color:#0f3460; font-size:1.1rem;">$@Model.Sum(v => v.Total).ToString("N0")</strong></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    }
+</div>

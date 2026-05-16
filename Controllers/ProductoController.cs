@@ -17,6 +17,9 @@ namespace TiendaRopa.Controllers
             _env = env;
         }
 
+        private bool EsAdmin() =>
+            HttpContext.Session.GetString("UsuarioRol") == "Administrador";
+
         public async Task<IActionResult> Index()
         {
             var productos = await _context.Productos
@@ -27,6 +30,7 @@ namespace TiendaRopa.Controllers
 
         public IActionResult Create()
         {
+            if (!EsAdmin()) return RedirectToAction("Index");
             ViewBag.Categorias = new SelectList(_context.Categorias, "Id", "Nombre");
             return View();
         }
@@ -35,6 +39,7 @@ namespace TiendaRopa.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Producto producto)
         {
+            if (!EsAdmin()) return RedirectToAction("Index");
             ModelState.Remove("ImagenArchivo");
             ModelState.Remove("ImagenUrl");
 
@@ -61,6 +66,7 @@ namespace TiendaRopa.Controllers
 
         public async Task<IActionResult> Edit(int id)
         {
+            if (!EsAdmin()) return RedirectToAction("Index");
             var producto = await _context.Productos.FindAsync(id);
             if (producto == null) return NotFound();
             ViewBag.Categorias = new SelectList(_context.Categorias, "Id", "Nombre", producto.CategoriaId);
@@ -71,8 +77,8 @@ namespace TiendaRopa.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Producto producto)
         {
+            if (!EsAdmin()) return RedirectToAction("Index");
             if (id != producto.Id) return NotFound();
-
             ModelState.Remove("ImagenArchivo");
             ModelState.Remove("ImagenUrl");
 
@@ -99,6 +105,7 @@ namespace TiendaRopa.Controllers
 
         public async Task<IActionResult> Delete(int id)
         {
+            if (!EsAdmin()) return RedirectToAction("Index");
             var producto = await _context.Productos
                 .Include(p => p.Categoria)
                 .FirstOrDefaultAsync(p => p.Id == id);
@@ -110,6 +117,7 @@ namespace TiendaRopa.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            if (!EsAdmin()) return RedirectToAction("Index");
             var producto = await _context.Productos.FindAsync(id);
             if (producto != null)
             {
