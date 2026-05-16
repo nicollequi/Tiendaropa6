@@ -13,7 +13,7 @@
     <div class="row justify-content-center">
         <div class="col-md-7">
             <div class="card p-4">
-                <form asp-action="Edit">
+                <form asp-action="Edit" enctype="multipart/form-data">
                     <input type="hidden" asp-for="Id" />
                     <div class="row g-3">
                         <div class="col-md-12">
@@ -54,6 +54,18 @@
                             <select asp-for="CategoriaId" asp-items="ViewBag.Categorias" class="form-select">
                                 <option value="">-- Selecciona una categoría --</option>
                             </select>
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label fw-bold">Imagen del producto</label>
+                            @if (!string.IsNullOrEmpty(Model.ImagenUrl))
+                            {
+                                <div class="mb-2">
+                                    <img src="@Model.ImagenUrl" style="height:150px; object-fit:cover; border-radius:8px;" />
+                                </div>
+                            }
+                            <input type="file" name="ImagenArchivo" class="form-control" accept="image/*" />
+                            <input type="hidden" asp-for="ImagenUrl" />
+                            <small class="text-muted">Deja vacío para mantener la imagen actual</small>
                         </div>
                     </div>
                     <div class="d-flex gap-2 mt-4">
