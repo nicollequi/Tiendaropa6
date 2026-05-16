@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TiendaRopa.Data;
 using TiendaRopa.Models;
@@ -14,6 +14,9 @@ namespace TiendaRopa.Controllers
             _context = context;
         }
 
+        private bool EsAdmin() =>
+            HttpContext.Session.GetString("UsuarioRol") == "Administrador";
+
         public async Task<IActionResult> Index()
         {
             var categorias = await _context.Categorias.ToListAsync();
@@ -22,6 +25,7 @@ namespace TiendaRopa.Controllers
 
         public IActionResult Create()
         {
+            if (!EsAdmin()) return RedirectToAction("Index");
             return View();
         }
 
@@ -29,6 +33,7 @@ namespace TiendaRopa.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Categoria categoria)
         {
+            if (!EsAdmin()) return RedirectToAction("Index");
             if (ModelState.IsValid)
             {
                 _context.Add(categoria);
@@ -40,6 +45,7 @@ namespace TiendaRopa.Controllers
 
         public async Task<IActionResult> Edit(int id)
         {
+            if (!EsAdmin()) return RedirectToAction("Index");
             var categoria = await _context.Categorias.FindAsync(id);
             if (categoria == null) return NotFound();
             return View(categoria);
@@ -49,6 +55,7 @@ namespace TiendaRopa.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Categoria categoria)
         {
+            if (!EsAdmin()) return RedirectToAction("Index");
             if (id != categoria.Id) return NotFound();
             if (ModelState.IsValid)
             {
@@ -61,6 +68,7 @@ namespace TiendaRopa.Controllers
 
         public async Task<IActionResult> Delete(int id)
         {
+            if (!EsAdmin()) return RedirectToAction("Index");
             var categoria = await _context.Categorias.FindAsync(id);
             if (categoria == null) return NotFound();
             return View(categoria);
@@ -70,6 +78,7 @@ namespace TiendaRopa.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            if (!EsAdmin()) return RedirectToAction("Index");
             var categoria = await _context.Categorias.FindAsync(id);
             if (categoria != null)
             {

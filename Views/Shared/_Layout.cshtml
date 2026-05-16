@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="utf-8" />
@@ -136,35 +136,43 @@
             </button>
             <div class="collapse navbar-collapse" id="navMenu">
                 <ul class="navbar-nav ms-auto">
-
-                    <li class="nav-item">
-                        <a class="nav-link" asp-controller="Home" asp-action="Index">
-                            <i class="fas fa-home"></i> Inicio
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" asp-controller="Producto" asp-action="Index">
-                            <i class="fas fa-tshirt"></i> Productos
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" asp-controller="Categoria" asp-action="Index">
-                            <i class="fas fa-tags"></i> Categorías
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" asp-controller="Venta" asp-action="Create">
-                            <i class="fas fa-cash-register"></i> Registrar Venta
-                        </a>
-                    </li>
                     @if (Context.Session.GetString("UsuarioRol") == "Administrador")
                     {
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Home" asp-action="Index">
+                                <i class="fas fa-home"></i> Inicio
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Producto" asp-action="Index">
+                                <i class="fas fa-tshirt"></i> Productos
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Categoria" asp-action="Index">
+                                <i class="fas fa-tags"></i> Categorías
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Venta" asp-action="Create">
+                                <i class="fas fa-cash-register"></i> Registrar Venta
+                            </a>
+                        </li>
                         <li class="nav-item">
                             <a class="nav-link" asp-controller="Venta" asp-action="Index">
                                 <i class="fas fa-chart-line"></i> Ventas
                             </a>
                         </li>
                     }
+                    else if (Context.Session.GetString("UsuarioRol") == "Cliente")
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Producto" asp-action="Index">
+                                <i class="fas fa-tshirt"></i> Productos
+                            </a>
+                        </li>
+                    }
+
                     <li class="nav-item ms-3">
                         @if (Context.Session.GetString("UsuarioNombre") != null)
                         {

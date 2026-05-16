@@ -65,7 +65,7 @@ namespace TiendaRopa.Controllers
                 }
 
                 usuario.Contrasena = HashSHA256(usuario.Contrasena);
-                usuario.Rol = "Cliente";
+                
                 _context.Add(usuario);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Login");

@@ -37,6 +37,13 @@
                        style="border-radius:10px; padding:0.8rem;" />
                 <span asp-validation-for="Contrasena" class="text-danger small"></span>
             </div>
+            <div class="mb-4">
+                <label asp-for="Rol" class="form-label fw-bold" style="color:#1a1a2e;">Rol</label>
+                <select asp-for="Rol" class="form-select" style="border-radius:10px; padding:0.8rem;">
+                    <option value="Cliente">Cliente</option>
+                    <option value="Administrador">Administrador</option>
+                </select>
+            </div>
             <button type="submit" class="btn-gold btn w-100" style="padding:0.8rem;">
                 <i class="fas fa-user-plus"></i> Crear cuenta
             </button>

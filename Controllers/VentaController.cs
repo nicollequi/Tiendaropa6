@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using TiendaRopa.Data;
@@ -18,10 +18,6 @@ namespace TiendaRopa.Controllers
         private bool EsAdmin() =>
             HttpContext.Session.GetString("UsuarioRol") == "Administrador";
 
-        private bool EstaLogueado() =>
-            HttpContext.Session.GetString("UsuarioNombre") != null;
-
-        // Lista de ventas — solo Administrador
         public async Task<IActionResult> Index()
         {
             if (!EsAdmin()) return RedirectToAction("Index", "Home");
@@ -35,10 +31,9 @@ namespace TiendaRopa.Controllers
             return View(ventas);
         }
 
-        // Formulario registrar venta — cualquier usuario logueado
         public IActionResult Create()
         {
-            if (!EstaLogueado()) return RedirectToAction("Login", "Cuenta");
+            if (!EsAdmin()) return RedirectToAction("Index", "Home");
 
             ViewBag.Productos = new SelectList(
                 _context.Productos.Where(p => p.Stock > 0), "Id", "Nombre");
@@ -49,12 +44,11 @@ namespace TiendaRopa.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(int productoId, int cantidad)
         {
-            if (!EstaLogueado()) return RedirectToAction("Login", "Cuenta");
+            if (!EsAdmin()) return RedirectToAction("Index", "Home");
 
             var producto = await _context.Productos.FindAsync(productoId);
             if (producto == null) return NotFound();
 
-            // Validación de stock
             if (cantidad > producto.Stock)
             {
                 TempData["Error"] = $"Stock insuficiente. Solo hay {producto.Stock} unidades disponibles.";
@@ -74,7 +68,6 @@ namespace TiendaRopa.Controllers
                 Fecha = DateTime.Now
             };
 
-            // Descontar stock
             producto.Stock -= cantidad;
 
             _context.Add(venta);

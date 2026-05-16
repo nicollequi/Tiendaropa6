@@ -1,6 +1,7 @@
-﻿@model List<TiendaRopa.Models.Producto>
+@model List<TiendaRopa.Models.Producto>
 @{
     ViewData["Title"] = "Productos";
+    var esAdmin = Context.Session.GetString("UsuarioRol") == "Administrador";
 }
 
 <div class="page-header">
@@ -9,9 +10,12 @@
             <h1><i class="fas fa-tshirt"></i> Productos</h1>
             <p class="mb-0" style="color:#ccc;">Gestiona todas las prendas de tu tienda</p>
         </div>
-        <a asp-action="Create" class="btn-gold btn">
-            <i class="fas fa-plus"></i> Nuevo Producto
-        </a>
+        @if (esAdmin)
+        {
+            <a asp-action="Create" class="btn-gold btn">
+                <i class="fas fa-plus"></i> Nuevo Producto
+            </a>
+        }
     </div>
 </div>
 
@@ -31,9 +35,12 @@
             <i class="fas fa-tshirt fa-4x mb-3" style="color:#e2b96f;"></i>
             <h4>No hay productos aún</h4>
             <p class="text-muted">Agrega tu primer producto</p>
-            <a asp-action="Create" class="btn-gold btn mt-2">
-                <i class="fas fa-plus"></i> Agregar producto
-            </a>
+            @if (esAdmin)
+            {
+                <a asp-action="Create" class="btn-gold btn mt-2">
+                    <i class="fas fa-plus"></i> Agregar producto
+                </a>
+            }
         </div>
     }
     else
@@ -78,19 +85,20 @@
                                     <span class="badge-agotado">Agotado</span>
                                 }
 
-                              
-
-                                <div class="d-flex gap-2 mt-2">
-                                    <a asp-action="Edit" asp-route-id="@producto.Id"
-                                       class="btn btn-sm btn-dark-custom flex-fill text-center">
-                                        <i class="fas fa-edit"></i> Editar
-                                    </a>
-                                    <a asp-action="Delete" asp-route-id="@producto.Id"
-                                       class="btn btn-sm btn-danger flex-fill text-center"
-                                       style="border-radius:25px;">
-                                        <i class="fas fa-trash"></i>
-                                    </a>
-                                </div>
+                                @if (esAdmin)
+                                {
+                                    <div class="d-flex gap-2 mt-2">
+                                        <a asp-action="Edit" asp-route-id="@producto.Id"
+                                           class="btn btn-sm btn-dark-custom flex-fill text-center">
+                                            <i class="fas fa-edit"></i> Editar
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@producto.Id"
+                                           class="btn btn-sm btn-danger flex-fill text-center"
+                                           style="border-radius:25px;">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                    </div>
+                                }
                             </div>
                         </div>
                     </div>
