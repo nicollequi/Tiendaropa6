@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using TiendaRopa.Data;
 using TiendaRopa.Models;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace TiendaRopa.Controllers
 {
@@ -14,14 +16,23 @@ namespace TiendaRopa.Controllers
             _context = context;
         }
 
+        private static string HashSHA256(string texto)
+        {
+            using var sha256 = SHA256.Create();
+            var bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(texto));
+            return Convert.ToHexString(bytes).ToLower();
+        }
+
         public IActionResult Login() => View();
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(string email, string contrasena)
         {
+            var hash = HashSHA256(contrasena);
+
             var usuario = await _context.Usuarios
-                .FirstOrDefaultAsync(u => u.Email == email && u.Contrasena == contrasena);
+                .FirstOrDefaultAsync(u => u.Email == email && u.Contrasena == hash);
 
             if (usuario == null)
             {
@@ -53,6 +64,7 @@ namespace TiendaRopa.Controllers
                     return View(usuario);
                 }
 
+                usuario.Contrasena = HashSHA256(usuario.Contrasena);
                 usuario.Rol = "Cliente";
                 _context.Add(usuario);
                 await _context.SaveChangesAsync();
